@@ -40,10 +40,16 @@ void rotServo(int speed){
 
 
 void loop() {
-  // Call the function for each part of the lab here to run
-
-  //posServo(); //For Position Servo
-  //rotServo(); //For Continuous Rotation Servo
+  // if there is a number in the serial port, get it
+  int num;
+  if (Serial.available()) {
+    num = Serial.parseInt();
+  }
+  if(num != -30719){
+  Serial.println(num);
+  delay(1000);
+  posServo(num); //For Position Servo
+  rotServo(num); //For Continuous Rotation Servo
   delay(5);
-
+  }
 }
