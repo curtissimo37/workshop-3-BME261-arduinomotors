@@ -16,47 +16,40 @@ void setup() {
   myservo2.attach(9); //configure digital pin 9 to control the servo
 }
 
-void posServo(){
-  //Delete the example code and put your code for part 1 (a) here
-
-  for(int pos = 0; pos <= 180; pos += 1) // goes from 0 degrees to 180 degrees 
-  {                                  // in steps of 1 degree 
-    myservo1.write(pos);              // tell servo to go to position in variable 'pos' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
-  } 
-  for(int pos = 180; pos>=0; pos-=1)     // goes from 180 degrees to 0 degrees 
-  {                                
-    myservo1.write(pos);              // tell servo to go to position in variable 'pos' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
-  } 
+void posServo(int pos){
+  // Constrain pos so that it must always be between 0 and 180
+    pos = constrain(pos,0,180);  
+    myservo1.write(pos); // tell servo to go to position in variable 'pos'  
 }
 
-void rotServo(){
-  //Delete the example code and put your code for part 1 (b) here
-  int fastforward = 180;
-  int slowforward = 100;
-  int stopped = 93;
-  int slowreverse = 80;
-  int fastreverse = 0;
+void rotServo(int speed){
+  //Constrain speed values so that they are always -100 or 100
+  speed = constrain(speed,-100,100);
+  int servo_signal = 93; // the default value is 0 where it is stopped
   
-  myservo2.write(fastforward);
-  delay(1000);
-  myservo2.write(slowforward);
-  delay(1000);
-  myservo2.write(stopped);
-  delay(1000);
-  myservo2.write(slowreverse);
-  delay(1000);
-  myservo2.write(fastreverse);
-  delay(1000);
+  if (speed > 0) {
+    // Forward direction, add a value to 93 scaled by the speed
+    servo_signal = 93 + (float)speed * (180 - 93) / 100.0;
+  } 
+  else if (speed < 0) {
+    // Reverse direction
+    servo_signal = 93 + (float)speed * (93 - 0) / 100.0;
+  }
+  myservo2.write(servo_signal);
 }
 
 
 void loop() {
-  // Call the function for each part of the lab here to run
-
-  //posServo(); //For Position Servo
-  //rotServo(); //For Continuous Rotation Servo
+  // if there is a number in the serial port, get it
+  int num;
+  if (Serial.available()) {
+    num = Serial.parseInt();
+  }
+  if(num != -30719){
+  Serial.println(num);
+  delay(1000);
+  posServo(num); //For Position Servo
+  rotServo(num); //For Continuous Rotation Servo
   delay(5);
-
+  }
 }
