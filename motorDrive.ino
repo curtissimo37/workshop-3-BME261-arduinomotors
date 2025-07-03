@@ -22,24 +22,20 @@ void posServo(int pos){
     myservo1.write(pos); // tell servo to go to position in variable 'pos'  
 }
 
-void rotServo(){
-  //Delete the example code and put your code for part 1 (b) here
-  int fastforward = 180;
-  int slowforward = 100;
-  int stopped = 93;
-  int slowreverse = 80;
-  int fastreverse = 0;
+void rotServo(int speed){
+  //Constrain speed values so that they are always -100 or 100
+  speed = constrain(speed,-100,100);
+  int servo_signal = 93; // the default value is 0 where it is stopped
   
-  myservo2.write(fastforward);
-  delay(1000);
-  myservo2.write(slowforward);
-  delay(1000);
-  myservo2.write(stopped);
-  delay(1000);
-  myservo2.write(slowreverse);
-  delay(1000);
-  myservo2.write(fastreverse);
-  delay(1000);
+  if (speed > 0) {
+    // Forward direction, add a value to 93 scaled by the speed
+    servo_signal = 93 + (float)speed * (180 - 93) / 100.0;
+  } 
+  else if (speed < 0) {
+    // Reverse direction
+    servo_signal = 93 + (float)speed * (93 - 0) / 100.0;
+  }
+  myservo2.write(servo_signal);
 }
 
 
